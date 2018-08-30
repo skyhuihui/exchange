@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:jpa="http://www.springframework.org/schema/data/jpa"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                        http://www.springframework.org/schema/beans/spring-beans.xsd
+                        http://www.springframework.org/schema/data/jpa
+                        http://www.springframework.org/schema/data/jpa/spring-jpa.xsd
+                        http://www.springframework.org/schema/tx
+                        http://www.springframework.org/schema/tx/spring-tx.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd"
+       default-lazy-init="false">
+
+    <!-- 包扫描 -->
+    <context:component-scan base-package="com.zag.db.mysql.po, com.zag.db.mysql.repository"/>
+
+    <!-- =======================================mysql========================================= -->
+    <!-- 请在启动应用项加载properties配置文件 -->
+
+    <!-- 数据源配置 -->
+    <bean id="dbDataSource" class="com.alibaba.druid.pool.DruidDataSource" init-method="init" destroy-method="close">
+        <property name="driverClassName" value="${jdbc.driver}"></property>
+        <property name="url" value="${jdbc.url}"/>
+        <property name="username" value="${jdbc.username}"/>
+        <property name="password" value="${jdbc.password}"/>
+        <!-- 初始化连接大小 -->
+        <property name="initialSize" value="${jdbc.initialSize}"/>
+        <!-- 连接池最大使用连接数量 -->
+        <property name="maxActive" value="${jdbc.maxActive}"/>
+        <!-- 连接池最大空闲 -->
+        <property name="maxIdle" value="${jdbc.maxIdle}"/>
+        <!-- 连接池最小空闲 -->
+        <property name="minIdle" value="${jdbc.minIdle}"/>
+        <!-- 获取连接最大等待时间 -->
+        <property name="maxWait" value="${jdbc.maxWait}"/>
+
+        <!-- 是否缓存preparedStatement，也就是PSCache PSCache对支持游标的数据库性能提升巨大，
+        比如说oracle。在mysql5.5以下的版本中没有PSCache功能，建议关闭掉。
+        作者在5.5版本中使用PSCache，通过监控界面发现PSCache有缓存命中率记录，该应该是支持PSCache。 -->
+        <property name="poolPreparedStatements" value="${jdbc.poolPreparedStatements}"/>
+
+        <!-- 要启用PSCache，必须配置大于0，当大于0时，poolPreparedStatements自动触发修改为true。
+            在jdbc中，不会存在Oracle下PSCache占用内存过多的问题，可以把这个数值配置大一些，比如说100 -->
+        <property name="maxOpenPreparedStatements" value="${jdbc.maxOpenPreparedStatements}"/>
+        <!-- 用来检测连接是否有效的sql，要求是一个查询语句。如果validationQuery为null，
+        testOnBorrow、testOnReturn、testWhileIdle都不会其作用 -->
+        <property name="validationQuery" value="${jdbc.validationQuery}"/>
+        <property name="validationQueryTimeout" value="${jdbc.validationQueryTimeout}"/>
+        <property name="testWhileIdle" value="${jdbc.testWhileIdle}"/>
+        <property name="testOnBorrow" value="${jdbc.testOnBorrow}"/>
+        <property name="testOnReturn" value="${jdbc.testOnReturn}"/>
+
+        <!-- 建议配置为true，不影响性能，并且保证安全性。申请连接的时候检测，如果空闲时间大于
+            timeBetweenEvictionRunsMillis，执行validationQuery检测连接是否有效。
+        <property name="testWhileIdle" value="${jdbc.testWhileIdle}" />
+         -->
+
+        <!-- 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒 -->
+        <property name="timeBetweenEvictionRunsMillis" value="${jdbc.timeBetweenEvictionRunsMillis}"/>
+        <!-- 配置一个连接在池中最小生存的时间，单位是毫秒 -->
+        <property name="minEvictableIdleTimeMillis" value="${jdbc.minEvictableIdleTimeMillis}"/>
+
+        <!-- 打开removeAbandoned功能  超过时间限制是否回收-->
+        <property name="removeAbandoned" value="${jdbc.removeAbandoned}"/>
+        <!-- 1800秒，也就是30分钟   超过时间限制多长-->
+        <property name="removeAbandonedTimeout" value="${jdbc.removeAbandonedTimeout}"/>
+        <!-- 关闭abanded连接时输出错误日志 -->
+        <property name="logAbandoned" value="${jdbc.logAbandoned}"/>
+        <!-- 监控数据库 -->
+        <!-- <property name="filters" value="stat" /> -->
+        <property name="filters" value="${jdbc.filters}"/>
+    </bean>
+
+    <bean id="persistenceUnitManager" class="org.springframework.data.jpa.support.MergingPersistenceUnitManager ">
+        <property name="persistenceXmlLocations">
+            <list value-type="java.lang.String">
+                <value>classpath*:META-INF/persistence.xml</value>
+            </list>
+        </property>
+        <property name="defaultDataSource" ref="dbDataSource"/>
+    </bean>
+
+    <!-- 定义实体管理器工厂 Jpa配置 LocalContainerEntityManagerFactoryBean这个选项Spring扮演了容器的角色。完全掌管JPA -->
+    <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+        <property name="dataSource" ref="dbDataSource"/>
+        <property name="packagesToScan">
+            <list>
+                <value>com.zag.db.mysql.po</value>
+            </list>
+        </property>
+        <property name="persistenceProvider">
+            <bean class="org.hibernate.ejb.HibernatePersistence"/>
+        </property>
+        <property name="persistenceUnitName" value="zag"/>
+        <property name="persistenceUnitManager" ref="persistenceUnitManager"/>
+        <property name="jpaVendorAdapter">
+            <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
+                <property name="generateDdl" value="true"/>
+                <property name="database" value="MYSQL"/>
+                <property name="databasePlatform" value="org.hibernate.dialect.MySQL5InnoDBDialect"/>
+                <property name="showSql" value="true"/>
+            </bean>
+        </property>
+        <property name="jpaDialect">
+            <bean class="org.springframework.orm.jpa.vendor.HibernateJpaDialect"/>
+        </property>
+        <property name="jpaProperties">
+            <props>
+                <!-- <prop key="hibernate.query.substitutions">1</prop>true 1, false 0
+                <prop key="hibernate.default_batch_fetch_size">16</prop>
+                <prop key="hibernate.max_fetch_depth">2</prop>
+                <prop key="hibernate.generate_statistics">true</prop>
+                <prop key="hibernate.bytecode.use_reflection_optimizer">true</prop> -->
+
+                <prop key="hibernate.hbm2ddl.auto">update</prop>
+                <!-- 这个配置能略微加速hibernate连接速度,但会失去自动更新表结构的能力
+                <prop key="hibernate.temp.use_jdbc_metadata_defaults">false</prop>
+                 -->
+                <prop key="hibernate.enable_lazy_load_no_trans">true</prop>
+                <prop key="hibernate.cache.use_query_cache">false</prop>
+                <prop key="hibernate.cache.use_second_level_cache">false</prop>
+                <prop key="hibernate.transaction.flush_before_completion">true</prop>
+                <prop key="hibernate.show_sql">${show_sql}</prop>
+                <!-- 大写字母转下划线加字母 hibernate5.0 -->
+                <prop key="hibernate.physical_naming_strategy">com.zag.support.jpa.util.UnderscoreNameCustomizer</prop>
+            </props>
+        </property>
+    </bean>
+
+    <!-- 重要配置：启用扫描并自动创建代理的功能 -->
+    <jpa:repositories base-package="com.zag.db.mysql.repository" transaction-manager-ref="transactionManager"
+                      entity-manager-factory-ref="entityManagerFactory"
+                      factory-class="com.zag.support.jpa.repository.CommonRepositoryFactoryBean"/>
+
+    <!-- 事件发布器 -->
+    <bean id="eventPublisher" class="com.zag.core.spring.event.EventPublisher"/>
+    <!-- 事件广播,配合事件发布器 -->
+    <bean id="applicationEventMulticaster" class="com.zag.core.spring.event.EventMulticaster"/>
+
+    <!-- Jpa 事务管理器 -->
+    <bean id="transactionManager" class="com.zag.core.spring.transaction.SimpleJpaTransactionManager">
+        <property name="entityManagerFactory" ref="entityManagerFactory"/>
+        <property name="eventPublisher" ref="eventPublisher"/>
+    </bean>
+
+    <!-- 开启注解事务 -->
+    <tx:annotation-driven transaction-manager="transactionManager" proxy-target-class="true"/>
+    <!-- =======================================mysql========================================= -->
+</beans>

@@ -1,0 +1,185 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.zag</groupId>
+		<artifactId>zag</artifactId>
+		<version>1.0.0</version>
+	</parent>
+	<artifactId>rest</artifactId>
+	<packaging>war</packaging>
+	<name>rest</name>
+	<description>rest</description>
+
+	<dependencies>
+		<dependency>
+			<groupId>com.zag</groupId>
+			<artifactId>service</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>javax</groupId>
+			<artifactId>javaee-api</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>javax.servlet-api</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>javax.servlet.jsp</groupId>
+			<artifactId>jsp-api</artifactId>
+			<version>2.2</version>
+		</dependency>
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>jstl</artifactId>
+			<version>1.2</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-web</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>net.logstash.logback</groupId>
+			<artifactId>logstash-logback-encoder</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-webmvc</artifactId>
+			<version>4.3.12.RELEASE</version>
+		</dependency>
+		<dependency>
+			<groupId>com.zag</groupId>
+			<artifactId>core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.zag</groupId>
+			<artifactId>dao</artifactId>
+			<version>1.0.0</version>
+			<scope>compile</scope>
+		</dependency>
+	</dependencies>
+
+	<profiles>
+		<profile>
+			<id>local</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<properties>
+				<profileName>local</profileName>
+				<enableSign>false</enableSign>
+				<!--zookeeper -->
+				<redis.config>properties/redis.properties</redis.config>
+
+				<!-- redis -->
+				<redis.maxTotal>1000</redis.maxTotal>
+				<redis.maxIdle>200</redis.maxIdle>
+				<redis.minIdle>10</redis.minIdle>
+				<redis.testOnBorrow>true</redis.testOnBorrow>
+				<redis.maxWaitMillis>1000</redis.maxWaitMillis>
+				<redis.testOnReturn>true</redis.testOnReturn>
+				<redis.testWhileIdle>true</redis.testWhileIdle>
+				<redis.timeBetweenEvictionRunsMillis>30000</redis.timeBetweenEvictionRunsMillis>
+				<redis.minEvictableIdleTimeMillis>30000</redis.minEvictableIdleTimeMillis>
+				<redis.socketTimeout>2000</redis.socketTimeout>
+				<redis.host>127.0.0.1@</redis.host>
+				<redis.port>6379@</redis.port>
+				<redis.name></redis.name>
+				<redis.password></redis.password>
+
+				<!--datasources -->
+				<jdbc.driver.zag>com.mysql.jdbc.Driver</jdbc.driver.zag>
+				<jdbc.url.zag>jdbc:mysql://127.0.0.1:3306/web3j-zag?autoReconnect=true&amp;useUnicode=true&amp;characterEncoding=UTF-8&amp;useSSL=false</jdbc.url.zag>
+				<jdbc.username.zag>root</jdbc.username.zag>
+				<jdbc.password.zag>root</jdbc.password.zag>
+				<jdbc.initialSize.zag>2</jdbc.initialSize.zag>
+				<jdbc.minIdle.zag>2</jdbc.minIdle.zag>
+				<jdbc.maxIdle.zag>100</jdbc.maxIdle.zag>
+				<jdbc.maxActive.zag>10</jdbc.maxActive.zag>
+				<jdbc.maxWait.zag>1000</jdbc.maxWait.zag>
+				<jdbc.removeAbandoned.zag>true</jdbc.removeAbandoned.zag>
+				<jdbc.removeAbandonedTimeout.zag>1800</jdbc.removeAbandonedTimeout.zag>
+				<jdbc.timeBetweenEvictionRunsMillis.zag>60000</jdbc.timeBetweenEvictionRunsMillis.zag>
+				<jdbc.minEvictableIdleTimeMillis.zag>300000</jdbc.minEvictableIdleTimeMillis.zag>
+				<jdbc.poolPreparedStatements.zag>true</jdbc.poolPreparedStatements.zag>
+				<jdbc.maxPoolPreparedStatementPerConnectionSize.zag>30</jdbc.maxPoolPreparedStatementPerConnectionSize.zag>
+				<jdbc.validationQuery.zag>SELECT 'x'</jdbc.validationQuery.zag>
+				<jdbc.validationQueryTimeout.zag>3600</jdbc.validationQueryTimeout.zag>
+				<show_sql.zag>true</show_sql.zag>
+			</properties>
+		</profile>
+
+		<profile>
+			<id>prod</id>
+			<properties>
+				<profileName>prod</profileName>
+				<enableSign>false</enableSign>
+				<!--zookeeper -->
+				<redis.config>properties/redis.properties</redis.config>
+
+				<!-- redis -->
+				<redis.maxTotal>120</redis.maxTotal>
+				<redis.maxIdle>10</redis.maxIdle>
+				<redis.minIdle>1</redis.minIdle>
+				<redis.testOnBorrow>true</redis.testOnBorrow>
+				<redis.maxWaitMillis>1000</redis.maxWaitMillis>
+				<redis.testOnReturn>true</redis.testOnReturn>
+				<redis.testWhileIdle>true</redis.testWhileIdle>
+				<redis.timeBetweenEvictionRunsMillis>30000</redis.timeBetweenEvictionRunsMillis>
+				<redis.minEvictableIdleTimeMillis>30000</redis.minEvictableIdleTimeMillis>
+				<redis.socketTimeout>2000</redis.socketTimeout>
+				<redis.host>127.0.0.1@</redis.host>
+				<redis.port>6379@</redis.port>
+				<redis.name></redis.name>
+				<redis.password></redis.password>
+
+				<!--datasources -->
+				<jdbc.driver.zag>com.mysql.jdbc.Driver</jdbc.driver.zag>
+				<jdbc.url.zag>jdbc:mysql://127.0.0.1:3306/web3j-zag?autoReconnect=true&amp;useUnicode=true&amp;characterEncoding=UTF-8&amp;useSSL=false</jdbc.url.zag>
+				<jdbc.username.zag>root</jdbc.username.zag>
+				<jdbc.password.zag>root</jdbc.password.zag>
+				<jdbc.initialSize.zag>2</jdbc.initialSize.zag>
+				<jdbc.minIdle.zag>2</jdbc.minIdle.zag>
+				<jdbc.maxIdle.zag>100</jdbc.maxIdle.zag>
+				<jdbc.maxActive.zag>10</jdbc.maxActive.zag>
+				<jdbc.maxWait.zag>1000</jdbc.maxWait.zag>
+				<jdbc.removeAbandoned.zag>true</jdbc.removeAbandoned.zag>
+				<jdbc.removeAbandonedTimeout.zag>1800</jdbc.removeAbandonedTimeout.zag>
+				<jdbc.timeBetweenEvictionRunsMillis.zag>60000</jdbc.timeBetweenEvictionRunsMillis.zag>
+				<jdbc.minEvictableIdleTimeMillis.zag>300000</jdbc.minEvictableIdleTimeMillis.zag>
+				<jdbc.poolPreparedStatements.zag>true</jdbc.poolPreparedStatements.zag>
+				<jdbc.maxPoolPreparedStatementPerConnectionSize.zag>30</jdbc.maxPoolPreparedStatementPerConnectionSize.zag>
+				<jdbc.validationQuery.zag>SELECT 'x'</jdbc.validationQuery.zag>
+				<jdbc.validationQueryTimeout.zag>3600</jdbc.validationQueryTimeout.zag>
+				<show_sql.zag>true</show_sql.zag>
+			</properties>
+		</profile>
+
+	</profiles>
+
+	<build>
+		<finalName>rest</finalName>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.8</source>
+					<target>1.8</target>
+					<encoding>UTF-8</encoding>
+					<compilerArguments>
+						<extdirs>${basedir}/src/main/webapp/WEB-INF/lib</extdirs>
+					</compilerArguments>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+	
+</project>

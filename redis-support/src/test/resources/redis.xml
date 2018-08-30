@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <!-- 请在启动应用项加载properties配置文件 -->
+    <bean id="shardedJedisPool" class="com.zag.redis.util.ShardedJedisPoolLoad" factory-method="getJedisPool">
+        <constructor-arg value="127.0.0.1" index="0" type="java.lang.String"/>
+        <constructor-arg value="false" index="1" type="java.lang.Boolean"/>
+        <constructor-arg value="properties/redis.properties" index="2" type="java.lang.String"/>
+    </bean>
+
+    <bean id="jedisPool" class="com.zag.redis.util.JedisPoolLoad" factory-method="jedisPool">
+        <constructor-arg value="127.0.0.1" index="0" type="java.lang.String"/>
+        <constructor-arg value="false" index="1" type="java.lang.Boolean"/>
+        <constructor-arg value="properties/redis.properties" index="2" type="java.lang.String"/>
+    </bean>
+
+</beans>

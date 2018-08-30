@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xmlns:context="http://www.springframework.org/schema/context"
+		xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans.xsd
+						   ">
+
+    <!-- spring启动时扫描项目路径下的properties文件,后续用${key }方式取出对应值,这样可以代码解耦和，后续只需修改properties文件即可 -->
+	<bean id="propertyPlaceholderConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="ignoreUnresolvablePlaceholders" value="true"/>
+        <property name="order" value="20"/>
+		<property name="locations">
+			<list>
+				<!-- dataSourse连接池相关属性，代码不在此贴出，会放在打包好的项目里面 -->
+				<value>classpath:properties/datasource.properties</value>
+				<value>classpath:properties/oss_config.properties</value>
+				<value>classpath:properties/redis.properties</value>
+			</list>
+		</property>
+	</bean>
+
+    <!--<bean id="restCfgZkProps" class="ZkProperties">-->
+        <!--<constructor-arg index="0" value="/rrb/config/rest_config.properties"/>-->
+    <!--</bean>-->
+
+    <!-- 来自于service的配置文件 -->
+    <import resource="classpath*:application-service.xml"/>
+
+</beans>

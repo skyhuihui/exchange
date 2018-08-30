@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:task="http://www.springframework.org/schema/task"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                        http://www.springframework.org/schema/beans/spring-beans.xsd
+                        http://www.springframework.org/schema/tx
+                        http://www.springframework.org/schema/tx/spring-tx.xsd http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd"
+
+       default-lazy-init="false">
+
+    <!-- 包扫描 -->
+    <context:component-scan base-package="com.zag.*"/>
+
+    <!-- =======================================mysql========================================= -->
+    <!-- 请在启动应用项加载properties配置文件 -->
+
+    <!-- 配置数据源 -->
+    <bean id="mybatis_datasource" name="mybatis_datasource" class="com.alibaba.druid.pool.DruidDataSource"
+          init-method="init" destroy-method="close">
+        <property name="driverClassName" value="${jdbc.driver}"></property>
+        <property name="url" value="${jdbc.url}"/>
+        <property name="username" value="${jdbc.username}"/>
+        <property name="password" value="${jdbc.password}"/>
+        <!-- 初始化连接大小 -->
+        <property name="initialSize" value="${jdbc.initialSize}"/>
+        <!-- 连接池最大使用连接数量 -->
+        <property name="maxActive" value="${jdbc.maxActive}"/>
+        <!-- 连接池最大空闲 -->
+        <property name="maxIdle" value="${jdbc.maxIdle}"/>
+        <!-- 连接池最小空闲 -->
+        <property name="minIdle" value="${jdbc.minIdle}"/>
+        <!-- 获取连接最大等待时间 -->
+        <property name="maxWait" value="${jdbc.maxWait}"/>
+
+        <!-- 是否缓存preparedStatement，也就是PSCache PSCache对支持游标的数据库性能提升巨大，
+        比如说oracle。在mysql5.5以下的版本中没有PSCache功能，建议关闭掉。
+        作者在5.5版本中使用PSCache，通过监控界面发现PSCache有缓存命中率记录，该应该是支持PSCache。 -->
+        <property name="poolPreparedStatements" value="${jdbc.poolPreparedStatements}"/>
+
+        <!-- 要启用PSCache，必须配置大于0，当大于0时，poolPreparedStatements自动触发修改为true。
+            在jdbc中，不会存在Oracle下PSCache占用内存过多的问题，可以把这个数值配置大一些，比如说100 -->
+        <property name="maxOpenPreparedStatements" value="${jdbc.maxOpenPreparedStatements}"/>
+        <!-- 用来检测连接是否有效的sql，要求是一个查询语句。如果validationQuery为null，
+        testOnBorrow、testOnReturn、testWhileIdle都不会其作用 -->
+        <property name="validationQuery" value="${jdbc.validationQuery}"/>
+        <property name="validationQueryTimeout" value="${jdbc.validationQueryTimeout}"/>
+        <property name="testWhileIdle" value="${jdbc.testWhileIdle}"/>
+        <property name="testOnBorrow" value="${jdbc.testOnBorrow}"/>
+        <property name="testOnReturn" value="${jdbc.testOnReturn}"/>
+
+        <!-- 建议配置为true，不影响性能，并且保证安全性。申请连接的时候检测，如果空闲时间大于
+            timeBetweenEvictionRunsMillis，执行validationQuery检测连接是否有效。
+        <property name="testWhileIdle" value="${jdbc.testWhileIdle}" />
+         -->
+
+        <!-- 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒 -->
+        <property name="timeBetweenEvictionRunsMillis" value="${jdbc.timeBetweenEvictionRunsMillis}"/>
+        <!-- 配置一个连接在池中最小生存的时间，单位是毫秒 -->
+        <property name="minEvictableIdleTimeMillis" value="${jdbc.minEvictableIdleTimeMillis}"/>
+
+        <!-- 打开removeAbandoned功能  超过时间限制是否回收-->
+        <property name="removeAbandoned" value="${jdbc.removeAbandoned}"/>
+        <!-- 1800秒，也就是30分钟   超过时间限制多长-->
+        <property name="removeAbandonedTimeout" value="${jdbc.removeAbandonedTimeout}"/>
+        <!-- 关闭abanded连接时输出错误日志 -->
+        <property name="logAbandoned" value="${jdbc.logAbandoned}"/>
+        <!-- 监控数据库 -->
+        <!-- <property name="filters" value="stat" /> -->
+        <property name="filters" value="${jdbc.filters}"/>
+    </bean>
+
+    <!-- =======================================mysql========================================= -->
+
+
+    <!-- dataSourceproxy 配置代理管理事务  -->
+    <bean id="dataSource" class="org.springframework.jdbc.datasource.TransactionAwareDataSourceProxy">
+        <property name="targetDataSource" ref="mybatis_datasource"/>
+    </bean>
+
+    <!-- 创建SqlSessionFactory，同时指定数据源 -->
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="configLocation" value="classpath:mybatis-configuration.xml"/>
+        <property name="mapperLocations">
+            <list>
+                <value>classpath*:mapper/*.xml</value>
+            </list>
+        </property>
+    </bean>
+
+
+    <!-- (事务管理)transaction manager, use JtaTransactionManager for global tx -->
+    <bean id="transactionManager" class="com.zag.core.spring.transaction.SimpleJpaTransactionManager">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="eventPublisher" ref="eventPublisher"/>
+    </bean>
+
+    <!-- 开启注解事务 -->
+    <tx:annotation-driven transaction-manager="transactionManager" proxy-target-class="true"/>
+
+    <!-- 可通过注解设置Spring Task -->
+    <task:annotation-driven/>
+
+    <!-- Mapper接口所在包名，Spring会自动查找其下的Mapper -->
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="basePackage" value="com.zag.dao"/>
+    </bean>
+
+    <!-- 重要配置：启用扫描并自动创建代理的功能 -->
+
+    <!-- 事件发布器 -->
+    <bean id="eventPublisher" class="com.zag.core.spring.event.EventPublisher"/>
+    <!-- 事件广播,配合事件发布器 -->
+    <bean id="applicationEventMulticaster" class="com.zag.core.spring.event.EventMulticaster"/>
+
+
+</beans>
