@@ -37,7 +37,7 @@
         <commons-lang3.version>3.7</commons-lang3.version>
         <guava.version>23.0</guava.version>
         <gson.version>2.2.4</gson.version>
-        <jackson.version>2.6.6</jackson.version>
+        <jackson.version>2.10.0.pr3</jackson.version>
         <httpclient.version>4.4</httpclient.version>
         <fastjson.version>1.2.7</fastjson.version>
 
