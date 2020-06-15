@@ -57,7 +57,7 @@
         <spring-security.version>3.2.5.RELEASE</spring-security.version>
 
         <!--hibernate -->
-        <hibernate-validator.version>5.2.4.Final</hibernate-validator.version>
+        <hibernate-validator.version>6.1.5.Final</hibernate-validator.version>
         <el.version>2.2.4</el.version>
         <hibernate-jpa-api.version>1.0.0.Final</hibernate-jpa-api.version>
         <hibernate-entitymanager.version>5.1.0.Final</hibernate-entitymanager.version>
