@@ -61,7 +61,7 @@
         <el.version>2.2.4</el.version>
         <hibernate-jpa-api.version>1.0.0.Final</hibernate-jpa-api.version>
         <hibernate-entitymanager.version>5.1.0.Final</hibernate-entitymanager.version>
-        <mysql-connector-java.version>5.1.44</mysql-connector-java.version>
+        <mysql-connector-java.version>8.0.16</mysql-connector-java.version>
         <druid.version>1.1.5</druid.version>
         <jta.version>1.1</jta.version>
 
