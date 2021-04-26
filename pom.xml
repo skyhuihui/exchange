@@ -88,7 +88,7 @@
         <commons-beanutils.version>1.9.4</commons-beanutils.version>
         <commons-fileupload.version>1.2.1</commons-fileupload.version>
         <commons-codec.version>1.10</commons-codec.version>
-        <commons-io.version>2.4</commons-io.version>
+        <commons-io.version>2.7</commons-io.version>
         <codelogger.utils.version>1.0.0</codelogger.utils.version>
         <commons-configuration.version>1.10</commons-configuration.version>
         <apache.curator-framework.version>4.0.0</apache.curator-framework.version>
