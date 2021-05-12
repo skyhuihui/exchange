@@ -54,7 +54,7 @@
         <spring-test.version>${spring-framework.version}</spring-test.version>
         <spring-aop.version>${spring-framework.version}</spring-aop.version>
         <spring-data-jpa.version>1.10.6.RELEASE</spring-data-jpa.version><!-- springdata-jpa的版本需要和springdata-elasticsearch保持一致，谨慎做版本修改 -->
-        <spring-security.version>3.2.5.RELEASE</spring-security.version>
+        <spring-security.version>5.2.10.RELEASE</spring-security.version>
 
         <!--hibernate -->
         <hibernate-validator.version>6.1.5.Final</hibernate-validator.version>
