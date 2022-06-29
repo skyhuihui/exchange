@@ -80,7 +80,7 @@
         <commons-net.version>3.3</commons-net.version>
         <commons-httpclient.version>3.1</commons-httpclient.version>
         <commons-vfs2.version>2.0</commons-vfs2.version>
-        <zookeeper.version>3.4.6</zookeeper.version>
+        <zookeeper.version>3.4.14</zookeeper.version>
         <zkclient.version>0.1</zkclient.version>
         <curator-framework.version>1.1.10</curator-framework.version>
         <commons-dbcp2.version>2.1</commons-dbcp2.version>
