@@ -71,7 +71,7 @@
 
         <!-- addition(附加) -->
         <javax.servlet-api.version>3.0.1</javax.servlet-api.version>
-        <tomcat-catalina.version>7.0.55</tomcat-catalina.version>
+        <tomcat-catalina.version>7.0.81</tomcat-catalina.version>
         <jstl.version>1.2</jstl.version>
         <servlet-api.version>2.5</servlet-api.version>
         <javax.servlet.jsp-api.version>2.2</javax.servlet.jsp-api.version>
